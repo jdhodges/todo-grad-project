@@ -75,8 +75,16 @@ module.exports.getTodoList = function() {
 };
 
 module.exports.addTodo = function(text) {
+    var todoListPlaceholder = driver.findElement(webdriver.By.id("todo-list-placeholder"));
     driver.findElement(webdriver.By.id("new-todo")).sendKeys(text);
     driver.findElement(webdriver.By.id("submit-todo")).click();
+    driver.wait(webdriver.until.elementIsNotVisible(todoListPlaceholder), 5000);
+};
+
+module.exports.deleteTodo = function() {
+    var todoListPlaceholder = driver.findElement(webdriver.By.id("todo-list-placeholder"));
+    driver.findElement(webdriver.By.className("delBtn")).click();
+    driver.wait(webdriver.until.elementIsNotVisible(todoListPlaceholder), 5000);
 };
 
 module.exports.setupErrorRoute = function(action, route) {
@@ -88,6 +96,11 @@ module.exports.setupErrorRoute = function(action, route) {
     if (action === "post") {
         router.post(route, function(req, res) {
             res.sendStatus(500);
+        });
+    }
+    if (action === "delete") {
+        router.delete(route, function(req, res) {
+            res.sendStatus(404);
         });
     }
 };

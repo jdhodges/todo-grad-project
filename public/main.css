@@ -29,3 +29,7 @@ h1 {
     line-height: 34px;
     color: rgba(169, 169, 169, 0.87);
 }
+
+#delBtn {
+    color: red;
+}

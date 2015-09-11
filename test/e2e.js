@@ -65,5 +65,24 @@ testing.describe("end to end", function() {
             });
         });
     });
+    testing.describe("on delete todo item", function() {
+        testing.it("deletes the todo item from the list", function() {
+            helpers.navigateToSite();
+            helpers.addTodo("New todo item");
+            helpers.deleteTodo();
+            helpers.getTodoList().then(function(elements) {
+                assert.equal(elements.length, 0);
+            });
+        });
+        testing.it("displays an error if the request fails", function() {
+            helpers.setupErrorRoute("delete", "/api/todo/*");
+            helpers.navigateToSite();
+            helpers.addTodo("New todo item");
+            helpers.deleteTodo();
+            helpers.getErrorText().then(function(text) {
+                assert.equal(text, "Failed to delete item. Server returned 404 - Not Found");
+            });
+        });
+    });
 });
 

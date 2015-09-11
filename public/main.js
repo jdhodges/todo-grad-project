@@ -27,6 +27,7 @@ function createTodo(title, callback) {
             error.textContent = "Failed to create item. Server returned " + this.status + " - " + this.responseText;
         }
     };
+
 }
 
 function getTodoList(callback) {
@@ -52,9 +53,38 @@ function reloadTodoList() {
         todos.forEach(function(todo) {
             var listItem = document.createElement("li");
             listItem.textContent = todo.title;
+
+            var delBtn = document.createElement("input");
+            delBtn.setAttribute("class", "delBtn");
+            delBtn.setAttribute("type", "button");
+            delBtn.setAttribute("value", "Delete");
+
+            delBtn.todoId = todo.id;
+            delBtn.onclick = deleteToDo;
+
+            listItem.appendChild(delBtn);
+
             todoList.appendChild(listItem);
         });
     });
 }
 
+function deleteToDo(event) {
+    var source = event.target || event.srcElement;
+
+    var idToDelete = source.todoId;
+
+    var deleteRequest = new XMLHttpRequest();
+    deleteRequest.open("DELETE", "/api/todo/" + idToDelete);
+    deleteRequest.onload = function() {
+        if (this.status === 200) {
+            reloadTodoList();
+        } else {
+            error.textContent = "Failed to delete item. Server returned " + this.status + " - " + this.responseText;
+        }
+    };
+    deleteRequest.send();
+}
+
 reloadTodoList();
+
