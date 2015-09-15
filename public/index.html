@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>TODO List</title>
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
         <link href="main.css" rel="stylesheet" type="text/css">
         <link rel="icon" type="image/ico" href="favicon.ico">
     </head>
@@ -10,12 +11,22 @@
         <header>
             <h1>TODO List</h1>
         </header>
+
         <section>
+            <div id="filters">
+                <label class="selectedFilter" onclick="filterClick()">All</label>
+                <label class="filter" onclick="filterClick()">Active</label>
+                <label class="filter" onclick="filterClick()">Completed</label>
+            </div>
+            <div id="subDiv">
+                <label id="count-label"></label>
+            </div>
             <h2 id="todo-list-placeholder">Loading...</h2>
             <ul id="todo-list"></ul>
             <form id="todo-form">
                 <input id="new-todo" placeholder="What needs to be done?" autofocus>
-                <input id="submit-todo" type="submit" value="Create">
+                <input id="submit-todo" class="button" type="submit" value="Create">
+                <input id="clear-completed" class="button" type="button" value="Clear Completed">
             </form>
             <div id="error"></div>
         </section>

@@ -87,6 +87,50 @@ module.exports.deleteTodo = function() {
     driver.wait(webdriver.until.elementIsNotVisible(todoListPlaceholder), 5000);
 };
 
+module.exports.completeTodo = function() {
+    var todoListPlaceholder = driver.findElement(webdriver.By.id("todo-list-placeholder"));
+    driver.findElement(webdriver.By.className("isCompleteCheck")).click();
+    driver.wait(webdriver.until.elementIsNotVisible(todoListPlaceholder), 5000);
+};
+
+module.exports.completeAllTodos = function() {
+    driver.findElements(webdriver.By.className("isCompleteCheck")).then(function(checks_arr) {
+        var todoListPlaceholder = driver.findElement(webdriver.By.id("todo-list-placeholder"));
+        for (var i = 0; i < checks_arr.length; i++) {
+            driver.findElement(webdriver.By.className("isCompleteCheck")).click();
+            driver.wait(webdriver.until.elementIsNotVisible(todoListPlaceholder), 5000);
+        }
+    });
+};
+
+module.exports.clearCompleted = function() {
+    var todoListPlaceholder = driver.findElement(webdriver.By.id("todo-list-placeholder"));
+    driver.findElement(webdriver.By.id("clear-completed")).click();
+    driver.wait(webdriver.until.elementIsNotVisible(todoListPlaceholder), 5000);
+};
+
+module.exports.completeBoxChecked = function() {
+    return driver.findElement(webdriver.By.className("isCompleteChecked")).isSelected();
+};
+
+module.exports.getTasksToCompleteText = function() {
+    return driver.findElement(webdriver.By.id("count-label")).getText();
+};
+
+module.exports.filterActiveItems = function() {
+    var todoListPlaceholder = driver.findElement(webdriver.By.id("todo-list-placeholder"));
+    driver.findElement(webdriver.By.className("filter")).click();
+    driver.wait(webdriver.until.elementIsNotVisible(todoListPlaceholder), 5000);
+};
+
+module.exports.filterCompletedItems = function() {
+    var todoListPlaceholder = driver.findElement(webdriver.By.id("todo-list-placeholder"));
+    driver.findElements(webdriver.By.className("filter")).then(function(elements) {
+        elements[1].click();
+    });
+    driver.wait(webdriver.until.elementIsNotVisible(todoListPlaceholder), 5000);
+};
+
 module.exports.setupErrorRoute = function(action, route) {
     if (action === "get") {
         router.get(route, function(req, res) {
@@ -100,6 +144,11 @@ module.exports.setupErrorRoute = function(action, route) {
     }
     if (action === "delete") {
         router.delete(route, function(req, res) {
+            res.sendStatus(404);
+        });
+    }
+    if (action === "complete") {
+        router.put(route, function(req, res) {
             res.sendStatus(404);
         });
     }

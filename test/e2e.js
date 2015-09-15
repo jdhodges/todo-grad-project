@@ -84,5 +84,86 @@ testing.describe("end to end", function() {
             });
         });
     });
+    testing.describe("on complete todo item", function() {
+        testing.it("marks the todo item as complete", function() {
+            helpers.navigateToSite();
+            helpers.addTodo("New todo item");
+            helpers.completeTodo();
+            helpers.navigateToSite();
+            helpers.completeBoxChecked().then(function(bool) {
+                assert(bool, true);
+            });
+        });
+        testing.it("shows the correct number of tasks to complete", function() {
+            helpers.navigateToSite();
+            helpers.getTasksToCompleteText().then(function (text) {
+                assert.equal(text, "0 tasks to complete");
+            });
+            helpers.addTodo("New todo item");
+            helpers.getTasksToCompleteText().then(function (text) {
+                assert.equal(text, "1 task to complete");
+            });
+            helpers.addTodo("New todo item");
+            helpers.getTasksToCompleteText().then(function (text) {
+                assert.equal(text, "2 tasks to complete");
+            });
+        });
+        testing.it("displays an error if the request fails", function() {
+            helpers.setupErrorRoute("complete", "/api/todo/*");
+            helpers.navigateToSite();
+            helpers.addTodo("New todo item");
+            helpers.completeTodo();
+            helpers.getErrorText().then(function(text) {
+                assert.equal(text, "Failed to update item. Server returned 404 - Not Found");
+            });
+        });
+    });
+    testing.describe("on clear complete items", function() {
+        testing.it("deletes completed items", function() {
+            helpers.navigateToSite();
+            helpers.addTodo("New todo item");
+            helpers.addTodo("New todo item");
+            helpers.addTodo("New todo item");
+            helpers.completeAllTodos();
+            helpers.clearCompleted();
+            helpers.getTodoList().then(function(elements) {
+                assert.equal(elements.length, 0);
+            });
+        });
+
+    });
+    testing.describe("on filter items", function() {
+        testing.it("shows all items when unfiltered", function() {
+            helpers.navigateToSite();
+            helpers.addTodo("New todo item");
+            helpers.addTodo("New todo item");
+            helpers.addTodo("New todo item");
+            helpers.getTodoList().then(function(elements) {
+                assert.equal(elements.length, 3);
+            });
+        });
+        testing.it("filters active items", function() {
+            helpers.navigateToSite();
+            helpers.addTodo("New todo item");
+            helpers.addTodo("New todo item");
+            helpers.addTodo("New todo item");
+            helpers.completeTodo();
+            helpers.filterActiveItems();
+            helpers.getTodoList().then(function(elements) {
+                assert.equal(elements.length, 2);
+            });
+        });
+        testing.it("filters completed items", function() {
+            helpers.navigateToSite();
+            helpers.addTodo("New todo item");
+            helpers.addTodo("New todo item");
+            helpers.addTodo("New todo item");
+            helpers.completeTodo();
+            helpers.filterCompletedItems();
+            helpers.getTodoList().then(function(elements) {
+                assert.equal(elements.length, 1);
+            });
+        });
+    });
 });
 
