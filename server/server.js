@@ -45,7 +45,7 @@ module.exports = function(port, middleware, callback) {
         }
     });
 
-    // Update
+    // Update hello
     app.put("/api/todo/:id", function(req, res) {
         var id = req.params.id;
         var todo = getTodo(id);

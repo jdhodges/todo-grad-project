@@ -3,6 +3,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-jscs");
     grunt.loadNpmTasks("grunt-mocha-test");
     grunt.loadNpmTasks("grunt-mocha-istanbul");
+    grunt.loadNpmTasks("grunt-contrib-watch");
 
     var testOutputLocation = process.env.CIRCLE_TEST_REPORTS || "test_output";
     var artifactsLocation = "build_artifacts";
@@ -66,6 +67,15 @@ module.exports = function(grunt) {
                     functions: 100
                 }
             }
+        },
+        watch: {
+            scripts: {
+                files: ["server/server.js"],
+                tasks: ["serve"],
+                options: {
+                    nospawn: true
+                }
+            }
         }
     });
 
@@ -93,4 +103,12 @@ module.exports = function(grunt) {
     grunt.registerTask("ci-test", ["check", "mochaTest:ci", "mocha_istanbul:ci", "istanbul_report",
         "istanbul_check_coverage"]);
     grunt.registerTask("default", "test");
+    grunt.registerTask("serve", "Run the server", function() {
+        grunt.util.spawn({
+            cmd: "node",
+            args: ["server"]
+        });
+
+        grunt.task.run("watch");
+    });
 };
