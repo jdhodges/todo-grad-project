@@ -31,7 +31,7 @@ module.exports = function(port, middleware, callback) {
         res.json(todos);
     });
 
-    // Delete
+    //Delete
     app.delete("/api/todo/:id", function(req, res) {
         var id = req.params.id;
         var todo = getTodo(id);
