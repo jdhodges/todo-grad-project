@@ -1,60 +1,91 @@
 var todoList = document.getElementById("todo-list");
-var todoListPlaceholder = document.getElementById("todo-list-placeholder");
+//var todoListPlaceholder = document.getElementById("todo-list-placeholder");
 var form = document.getElementById("todo-form");
 var todoTitle = document.getElementById("new-todo");
 var error = document.getElementById("error");
+var app = angular.module("app", ["ngMaterial"]);
 
-form.onsubmit = function(event) {
-    var title = todoTitle.value;
-    createTodo(title, function() {
-        reloadTodoList();
-    });
-    todoTitle.value = "";
-    event.preventDefault();
-};
+app.controller("TodoListController", ["$http", function($http) {
 
-function createTodo(title, callback) {
-    var createRequest = new XMLHttpRequest();
-    createRequest.open("POST", "/api/todo");
-    createRequest.setRequestHeader("Content-type", "application/json");
-    createRequest.send(JSON.stringify({
-        title: title
-    }));
-    createRequest.onload = function() {
-        if (this.status === 201) {
-            callback();
-        } else {
-            error.textContent = "Failed to create item. Server returned " + this.status + " - " + this.responseText;
-        }
+    var todoListCtrl = this;
+    todoListCtrl.todos = {};
+    todoListCtrl.newTodo = {};
+    todoListCtrl.currentHover = -1;
+    todoListCtrl.selectedFilter = -1;
+    todoListCtrl.activeTasks = 0;
+    todoListCtrl.completedTasks = 0;
+
+    this.setClear = function(id) {
+        todoListCtrl.currentHover = id;
     };
-}
 
-function getTodoList(callback) {
-    var createRequest = new XMLHttpRequest();
-    createRequest.open("GET", "/api/todo");
-    createRequest.onload = function() {
-        if (this.status === 200) {
-            callback(JSON.parse(this.responseText));
-        } else {
-            error.textContent = "Failed to get list. Server returned " + this.status + " - " + this.responseText;
-        }
+    this.clearCheck = function(id) {
+        return todoListCtrl.currentHover === id;
     };
-    createRequest.send();
-}
 
-function reloadTodoList() {
-    while (todoList.firstChild) {
-        todoList.removeChild(todoList.firstChild);
-    }
-    todoListPlaceholder.style.display = "block";
-    getTodoList(function(todos) {
-        todoListPlaceholder.style.display = "none";
-        todos.forEach(function(todo) {
-            var listItem = document.createElement("li");
-            listItem.textContent = todo.title;
-            todoList.appendChild(listItem);
+    this.refreshTodoList = function() {
+        $http.get("/api/todo").success(function (data) {
+            todoListCtrl.todos = data;
+
         });
-    });
-}
+    };
 
-reloadTodoList();
+    this.addTodo = function(todo) {
+        $http.post("api/todo", todo).success(function(data) {
+            todoListCtrl.refreshTodoList();
+            todoListCtrl.newTodo = {};
+        });
+    };
+
+    this.completeTodo = function(todo) {
+        $http.put("api/todo/" + todo.id, {isComplete: !todo.isComplete}).success(function(data) {
+            //todoListCtrl.refreshTodoList();
+        });
+    };
+
+    this.deleteTodo = function(todo) {
+        $http.delete("api/todo/" + todo.id).success(function(data) {
+            todoListCtrl.todos = todoListCtrl.todos.filter(function(otherTodo) {
+                return otherTodo !== todo;
+            });
+        });
+    };
+
+    this.clearCompleted = function() {
+        [].forEach.call(todoListCtrl.todos, function(todo) {
+            if (todo.isComplete) {
+                $http.delete("api/todo/" + todo.id).success(function(data) {
+                    todoListCtrl.todos = todoListCtrl.todos.filter(function(otherTodo) {
+                        return otherTodo !== todo;
+                    });
+                });
+            }
+        });
+    };
+
+    this.activeCount = function() {
+        todoListCtrl.activeTasks = 0;
+        todoListCtrl.completedTasks = 0;
+
+        [].forEach.call(todoListCtrl.todos, function(todo) {
+            if (todo.isComplete)
+                todoListCtrl.completedTasks++;
+            else
+                todoListCtrl.activeTasks++;
+        });
+
+        if (todoListCtrl.activeTasks === 1) {
+            return todoListCtrl.activeTasks + " task to complete";
+        }
+
+        return todoListCtrl.activeTasks + " tasks to complete";
+    };
+
+    this.applyFilter = function(todo) {
+        return (todoListCtrl.selectedFilter===1 && todo.isComplete) || (todoListCtrl.selectedFilter===2 && !todo.isComplete);
+    };
+
+    this.refreshTodoList();
+
+}]);
+

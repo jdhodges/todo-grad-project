@@ -1,24 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="app">
     <head>
         <meta charset="utf-8">
         <title>TODO List</title>
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
         <link href="main.css" rel="stylesheet" type="text/css">
         <link rel="icon" type="image/ico" href="favicon.ico">
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.10.0/angular-material.min.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!-- Angular Material Dependencies -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
+
+        <!-- Angular Material Javascript now available via Google CDN; version 0.10 used here -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.10.0/angular-material.min.js"></script>
+
+        <script type="text/javascript" src="main.js"></script>
     </head>
-    <body>
+    <body ng-controller="TodoListController as todoCtrl">
         <header>
             <h1>TODO List</h1>
         </header>
         <section>
-            <h2 id="todo-list-placeholder">Loading...</h2>
-            <ul id="todo-list"></ul>
-            <form id="todo-form">
-                <input id="new-todo" placeholder="What needs to be done?" autofocus>
-                <input id="submit-todo" type="submit" value="Create">
+            <md-tabs style="margin-top: 10px" md-selected="todoCtrl.selectedFilter" md-stretch-tabs="always">
+                <md-tab label="All"></md-tab>
+                <md-tab label="Active"></md-tab>
+                <md-tab label="Completed"></md-tab>
+            </md-tabs>
+            <md-card ng-repeat="todo in todoCtrl.todos track by todo.id" ng-mouseover="todoCtrl.setClear(todo.id)" ng-mouseleave="todoCtrl.setClear(-1)" ng-hide="todoCtrl.applyFilter(todo)">
+                <md-card-content>
+                    <div class="row">
+                        <i class="material-icons" ng-show="todoCtrl.clearCheck(todo.id)" ng-click="todoCtrl.deleteTodo(todo)">clear</i>
+                        <md-checkbox style="display: -webkit-box" aria-label="{{todo.title}}" ng-click="todoCtrl.completeTodo(todo)" ng-model="todo.isComplete">
+                            {{todo.title}}
+                        </md-checkbox>
+                    </div>
+                </md-card-content>
+            </md-card>
+            <form id="todo-form" name="todoForm" ng-submit="todoCtrl.addTodo(todoCtrl.newTodo)">
+                <md-input-container flex>
+                    <label>What needs to be done?</label>
+                    <input ng-model="todoCtrl.newTodo.title">
+                </md-input-container>
             </form>
+            <div class="footer">
+                <div>
+                    <md-label>{{todoCtrl.activeCount()}}</md-label>
+                </div>
+                <md-button style="margin: 0; font-size:12px" md-no-ink="true" class="md-raised" ng-show="todoCtrl.completedTasks > 0" ng-click="todoCtrl.clearCompleted()">Clear Completed</md-button>
+            </div>
+
             <div id="error"></div>
         </section>
-        <script type="text/javascript" src="main.js"></script>
     </body>
 </html>

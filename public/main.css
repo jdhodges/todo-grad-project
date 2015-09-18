@@ -1,25 +1,20 @@
 body {
     background: #E8F5E9;
     color: rgba(0, 0, 0, 0.87);
-    font-family: sans-serif;
+    font-family: 'Roboto', sans-serif;
     margin: 0;
 }
 
 header {
-    background: repeating-linear-gradient(
-  	90deg,
-  	#000000,
-  	#000000 10px,
-  	#ffffff 10px,
-  	#ffffff 20px
-    );
+    background-color: #009688;
+    color: #ffffff;
     padding: 0.5em 1em;
+    box-shadow: 1px 1px 2px 2px #ccc;
 }
-
 section,
 h1 {
-    max-width: 1170px;
-    margin-left: auto;
+    max-width: 400px;
+    margin-left: 500px;
     margin-right: auto;
 }
 
@@ -27,5 +22,46 @@ h1 {
     display: block;
     font-size: 34px;
     line-height: 34px;
-    color: rgba(169, 169, 169, 0.87);
+    color: white;
+}
+
+#todo-form {
+    margin: 5px;
+}
+
+#new-todo {
+    font-family: 'Roboto', sans-serif;
+}
+
+li {
+    list-style: none;
+}
+
+.material-icons {
+    float: right;
+    cursor: pointer;
+}
+
+.row {
+    vertical-align: middle;
+}
+
+md-label {
+    color: rgba(0,0,0,0.54);
+    font-size: 14px;
+}
+
+.footer {
+    height: 36px;
+    margin-bottom: 15px;
+}
+
+.footer div {
+    float: left;
+    line-height: 36px;
+}
+
+button {
+    font-size: 12px;
+    float: right;
 }
