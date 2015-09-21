@@ -1,11 +1,8 @@
-var todoList = document.getElementById("todo-list");
-//var todoListPlaceholder = document.getElementById("todo-list-placeholder");
-var form = document.getElementById("todo-form");
-var todoTitle = document.getElementById("new-todo");
-var error = document.getElementById("error");
 var app = angular.module("app", ["ngMaterial"]);
 
 app.controller("TodoListController", ["$http", function($http) {
+
+    var error = document.getElementById("error");
 
     var todoListCtrl = this;
     todoListCtrl.todos = {};
@@ -32,6 +29,8 @@ app.controller("TodoListController", ["$http", function($http) {
 
             if (todoListCtrl.activeTasks === -1 && todoListCtrl.completedTasks === -1)
                 todoListCtrl.activeCount();
+        }).error(function(status, statusText) {
+            error.textContent = "Failed to get list. Server returned " + statusText + " - " + status;
         });
     };
 
@@ -41,11 +40,14 @@ app.controller("TodoListController", ["$http", function($http) {
             todoListCtrl.activeTasks++;
             todoListCtrl.refreshTodoList();
             todoListCtrl.newTodo = {};
+        }).error(function(status, statusText) {
+            error.textContent = "Failed to create item. Server returned " + statusText + " - " + status;
         });
     };
 
     this.completeTodo = function(todo) {
         console.log("Complete");
+
         $http.put("api/todo/" + todo.id, {isComplete: !todo.isComplete}).success(function(data) {
             if (todo.isComplete) {
                 todoListCtrl.activeTasks--;
@@ -54,7 +56,8 @@ app.controller("TodoListController", ["$http", function($http) {
                 todoListCtrl.activeTasks++;
                 todoListCtrl.completedTasks--;
             }
-            //todoListCtrl.refreshTodoList();
+        }).error(function(status, statusText) {
+            error.textContent = "Failed to update item. Server returned " + statusText + " - " + status;
         });
     };
 
@@ -70,6 +73,8 @@ app.controller("TodoListController", ["$http", function($http) {
             todoListCtrl.todos = todoListCtrl.todos.filter(function(otherTodo) {
                 return otherTodo !== todo;
             });
+        }).error(function(status, statusText) {
+            error.textContent = "Failed to delete item. Server returned " + statusText + " - " + status;
         });
     };
 
@@ -82,6 +87,8 @@ app.controller("TodoListController", ["$http", function($http) {
                     todoListCtrl.todos = todoListCtrl.todos.filter(function(otherTodo) {
                         return otherTodo !== todo;
                     });
+                }).error(function(status, statusText) {
+                    error.textContent = "Failed to delete item. Server returned " + statusText + " - " + status;
                 });
             }
         });
