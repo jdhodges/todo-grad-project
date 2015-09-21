@@ -37,13 +37,20 @@ li {
     list-style: none;
 }
 
-.material-icons {
+
+.row {
+    vertical-align: middle;
+}
+
+md-card .material-icons {
+    visibility: collapse;
+    display: inline-block;
     float: right;
     cursor: pointer;
 }
 
-.row {
-    vertical-align: middle;
+md-card:hover .material-icons {
+    visibility: visible;
 }
 
 md-label {

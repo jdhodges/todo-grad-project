@@ -28,16 +28,20 @@
                 <md-tab label="Active"></md-tab>
                 <md-tab label="Completed"></md-tab>
             </md-tabs>
-            <md-card ng-repeat="todo in todoCtrl.todos track by todo.id" ng-mouseover="todoCtrl.setClear(todo.id)" ng-mouseleave="todoCtrl.setClear(-1)" ng-hide="todoCtrl.applyFilter(todo)">
-                <md-card-content>
-                    <div class="row">
-                        <i class="material-icons" ng-show="todoCtrl.clearCheck(todo.id)" ng-click="todoCtrl.deleteTodo(todo)">clear</i>
-                        <md-checkbox md-no-ink="true" style="display: -webkit-box" aria-label="{{todo.title}}" ng-click="todoCtrl.completeTodo(todo)" ng-model="todo.isComplete">
-                            {{todo.title}}
-                        </md-checkbox>
-                    </div>
-                </md-card-content>
-            </md-card>
+            <div id="todo-list">
+                <!--<md-card ng-repeat="todo in todoCtrl.todos track by todo.id" ng-hide="todoCtrl.applyFilter(todo)">-->
+                <md-card ng-repeat="todo in todoCtrl.todos track by todo.id" ng-hide="(todoCtrl.selectedFilter===1 && todo.isComplete) || (todoCtrl.selectedFilter===2 && !todo.isComplete)">
+                    <md-card-content>
+                        <div class="row">
+                            <!--<i class="material-icons" ng-show="todoCtrl.clearCheck(todo.id)" ng-click="todoCtrl.deleteTodo(todo)">clear</i>-->
+                            <i class="material-icons" ng-click="todoCtrl.deleteTodo(todo)">clear</i>
+                            <md-checkbox style="cursor:default;display: flex" md-no-ink="true" style="display: -webkit-box" aria-label="{{todo.title}}" ng-click="todoCtrl.completeTodo(todo)" ng-model="todo.isComplete">
+                                {{todo.title}}
+                            </md-checkbox>
+                        </div>
+                    </md-card-content>
+                </md-card>
+            </div>
             <form id="todo-form" name="todoForm" ng-submit="todoCtrl.addTodo(todoCtrl.newTodo)">
                 <md-input-container flex>
                     <label>What needs to be done?</label>
@@ -46,7 +50,7 @@
             </form>
             <div class="footer">
                 <div>
-                    <md-label>{{todoCtrl.activeCount()}}</md-label>
+                    <md-label>{{todoCtrl.activeTasks}} to complete</md-label>
                 </div>
                 <md-button style="margin: 0; font-size:12px" md-no-ink="true" class="md-raised" ng-show="todoCtrl.completedTasks > 0" ng-click="todoCtrl.clearCompleted()">Clear Completed</md-button>
             </div>
