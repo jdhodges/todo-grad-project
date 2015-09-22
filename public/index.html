@@ -29,6 +29,7 @@
                 <md-tab label="Completed"></md-tab>
             </md-tabs>
             <div id="todo-list">
+                <md-progress-circular id="todo-loading" md-mode="indeterminate"></md-progress-circular>
                 <!--<md-card ng-repeat="todo in todoCtrl.todos track by todo.id" ng-hide="todoCtrl.applyFilter(todo)">-->
                 <md-card ng-repeat="todo in todoCtrl.todos track by todo.id" ng-hide="(todoCtrl.selectedFilter===1 && todo.isComplete) || (todoCtrl.selectedFilter===2 && !todo.isComplete)">
                     <md-card-content>
@@ -45,14 +46,14 @@
             <form id="todo-form" name="todoForm" ng-submit="todoCtrl.addTodo(todoCtrl.newTodo)">
                 <md-input-container flex>
                     <label>What needs to be done?</label>
-                    <input ng-model="todoCtrl.newTodo.title">
+                    <input ng-value="" ng-model="todoCtrl.newTodo.title">
                 </md-input-container>
             </form>
             <div class="footer">
                 <div>
-                    <md-label>{{todoCtrl.activeTasks}} to complete</md-label>
+                    <md-label id="count-label">{{todoCtrl.activeTasks}} to complete</md-label>
                 </div>
-                <md-button style="margin: 0; font-size:12px" md-no-ink="true" class="md-raised" ng-show="todoCtrl.completedTasks > 0" ng-click="todoCtrl.clearCompleted()">Clear Completed</md-button>
+                <md-button id="clear-completed" style="margin: 0; font-size:12px" md-no-ink="true" class="md-raised" ng-show="todoCtrl.completedTasks > 0" ng-click="todoCtrl.clearCompleted()">Clear Completed</md-button>
             </div>
 
             <div id="error"></div>

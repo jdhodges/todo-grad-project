@@ -72,3 +72,10 @@ button {
     font-size: 12px;
     float: right;
 }
+
+#todo-loading {
+    display: none;
+    margin: 15px;
+    position: relative;
+    left: 40%;
+}
